@@ -8,7 +8,6 @@ import com.als.framework.tools.EncryptUtils;
 import com.als.framework.tools.HashUtils;
 import com.als.framework.tools.MACUtils;
 import com.als.framework.tools.RandomUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
@@ -42,8 +41,6 @@ public class ALSProtocolHandler {
     private Cache<String, ContextParameters> cache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.MINUTES).build();
 
     private HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-
-    private ObjectMapper om = new ObjectMapper();
 
     private final static List<String> handshakeRequests = Lists.newArrayList(
             "ClientHello",
