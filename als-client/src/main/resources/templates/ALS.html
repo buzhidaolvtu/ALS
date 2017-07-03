@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- HTTP 1.1 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <!-- HTTP 1.0 -->
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>Title</title>
+    <script src="../static/js/aes-js.js"></script>
+    <script src="../static/js/sha256.js"></script>
+    <script src="../static/js/jsencrypt.js"></script>
+    <script src="../static/js/jquery-1.12.4.js"></script>
+    <script src="../static/crypto-js/crypto-js.js"></script>
+    <script src="../static/crypto-js/aes.js"></script>
+    <script src="../static/js/als.js?a=1"></script>
+    <script>
+        var public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7Agb1PsYJfw9ixapGZmhrHY3DLRSjFZ7qNF8UC/H5poPFGv1kgu47CHGYmm7b5wz/OqVAWEt0ngFotC0lvGlscdMvLAAV1HIrdRptFYVinjUwGGdx+XVuHAjljHkbKazlyP62tVk3UnGtpX4OxzLHeNiqmnxrJpTZoTOs3HjoNJWD8KScHQ8GhbExOCDzfdGB7Jv4nFRoUa9oEDIfJj37vVI3yY+kHNZxAe2wnLCNFlZx0QnWhnuGgpH7+RMwiPuFJlZNWQWx1brzSehvRCJRnzxh4myZWMi7Zq8/jd/gofET/ss2nB6FzyYrE9RL8XRKcGK5Gls1vEhBRe4ePPpfwIDAQAB";
+        var als = new ALS(public_key);
+    </script>
+</head>
+<body>
+<button id="handshake">握手</button>
+<script>
+    $("#handshake").on("click", function () {
+
+        als.handshake()
+                .done(function () {
+                    console.log("handshake succeed.");
+                    als.encrypt("passwordpassword")
+                            .then(function (data) {
+                                console.log(data);
+                                var decrypt = als.decrypt(data);
+                                console.log(decrypt);
+                                return decrypt;
+                            });
+                })
+                .fail(function () {
+                    console.log("handshake failed.");
+                });
+    });
+</script>
+</body>
+</html>

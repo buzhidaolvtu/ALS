@@ -1,0 +1,4 @@
+rootProject.name = 'ALS'
+include 'als-server'
+include 'als-client'
+
