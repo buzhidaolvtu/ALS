@@ -1,6 +1,6 @@
 package com.als.framework.servletapi;
 
-import com.als.framework.protocol.AlsCipherUtils;
+import com.als.framework.handle.AlsCipherUtils;
 import com.als.framework.protocol.recordprotocol.ALSCiphertext;
 import com.als.framework.protocol.securityparameters.ContextParameters;
 import org.springframework.http.MediaType;

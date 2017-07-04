@@ -1,6 +1,6 @@
 package com.als.framework.filter;
 
-import com.als.framework.protocol.ALSProtocolHandler;
+import com.als.framework.handle.ALSProtocolHandler;
 import com.als.framework.servletapi.ProxyRequestHolder;
 
 import javax.servlet.*;
