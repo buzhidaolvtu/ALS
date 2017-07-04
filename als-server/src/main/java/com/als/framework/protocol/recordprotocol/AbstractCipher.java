@@ -1,0 +1,7 @@
+package com.als.framework.protocol.recordprotocol;
+
+/**
+ * Created by lvtu on 2017/7/3.
+ */
+public abstract class AbstractCipher {
+}

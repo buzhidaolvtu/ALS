@@ -1,9 +1,9 @@
-package com.als.framework.protocol.bean;
+package com.als.framework.protocol.securityparameters;
 
 /**
  * Created by lvtu on 2017/6/27.
  */
-public class SecurityParameters {
+public class ALSSecurityParameters {
     private String master_secret;
     private String client_random;
     private String server_random;

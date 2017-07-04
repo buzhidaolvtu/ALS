@@ -1,4 +1,4 @@
-package com.als.framework.protocol.bean;
+package com.als.framework.protocol.handshakeprotocol.finalization;
 
 /**
  * Created by lvtu on 2017/6/27.

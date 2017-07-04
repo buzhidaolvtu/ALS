@@ -21,22 +21,38 @@
 </head>
 <body>
 <button id="handshake">握手</button>
+<br>
+<button id="sendData">发送数据</button>
 <script>
     $("#handshake").on("click", function () {
 
         als.handshake()
                 .done(function () {
                     console.log("handshake succeed.");
-                    als.encrypt("passwordpassword")
-                            .then(function (data) {
-                                console.log(data);
-                                var decrypt = als.decrypt(data);
-                                console.log(decrypt);
-                                return decrypt;
-                            });
                 })
                 .fail(function () {
                     console.log("handshake failed.");
+                });
+    });
+    $("#sendData").on("click", function () {
+        var auth = {username: "username123", "password": "password123"};
+        $.ajax({
+            url: "http://localhost:8080/login?sessionId=" + als.getSessionId(),
+            method: "POST",
+            cache: false,
+            contentType: "application/json; charset=UTF-8",
+            headers: {
+                "x-als-encrypt": "true"
+            },
+            data: JSON.stringify(als.encrypt(auth))
+        })
+                .done(function (data) {
+                    console.log(data);
+                    var decrypt = als.decrypt(data);
+                    console.log(decrypt);
+                })
+                .fail(function () {
+                    console.log("encrypt failed.");
                 });
     });
 </script>

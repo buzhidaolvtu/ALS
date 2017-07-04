@@ -189,7 +189,7 @@
         this.securityParameters = new SecurityParameters();
         this.contextParameters = new ContextParameters();
         this.contextParameters.public_key = publicKey;
-        this.contextParameters.securityParameters = securityParameters;
+        this.contextParameters.securityParameters = this.securityParameters;
 
         var securityParameters = this.securityParameters;
         var contextParameters = this.contextParameters;
@@ -253,8 +253,12 @@
          * @constructor
          */
         function GenericBlockCipher(data) {
-            this.data = data;
-            this.mac = MAC(securityParameters.master_secret, data);
+            if (typeof data === "string") {
+                this.data = data;
+            } else if (typeof data === "object") {
+                this.data = JSON.stringify(data);
+            }
+            this.mac = MAC(securityParameters.master_secret, this.data);
         }
 
         function ALSCiphertext(obj) {
@@ -283,7 +287,7 @@
             contextParameters.client_version = clientHello.client_version;
             securityParameters.client_random = clientHello.random;
             return $.ajax({//send ClientHello message
-                url: "http://localhost:8080/ClientHello?sessionId=" + "我",
+                url: "http://localhost:8080/ClientHello",
                 method: "POST",
                 cache: false,
                 contentType: "application/json; charset=UTF-8",
@@ -298,7 +302,7 @@
                 var clientKeyExchange = new ClientKeyExchange(securityParameters.pre_master_secret);
 
                 return $.ajax({//send clientKeyExchange message
-                    url: "http://localhost:8080/clientKeyExchange?sessionId=" + contextParameters.session_id,
+                    url: "http://localhost:8080/clientKeyExchange?sessionId=" + getSessionId(),
                     method: "POST",
                     cache: false,
                     contentType: "application/json; charset=UTF-8",
@@ -310,7 +314,7 @@
                 var clientFinished = new Finished();
                 clientFinished.verify_data = hash(securityParameters.client_random, securityParameters.server_random, securityParameters.pre_master_secret.getPreMasterSecret(), "client finished");
                 return $.ajax({//send ClientFinished message
-                    url: "http://localhost:8080/ClientFinished?sessionId=" + contextParameters.session_id,
+                    url: "http://localhost:8080/ClientFinished?sessionId=" + getSessionId(),
                     method: "POST",
                     cache: false,
                     contentType: "application/json; charset=UTF-8",
@@ -342,30 +346,28 @@
         var encrypt = function (originalData) {
             var gbc = new GenericBlockCipher(originalData);
             var alsCipher = new ALSCiphertext(gbc);
-
-            return $.ajax({
-                url: "http://localhost:8080/encryptedData?sessionId=" + contextParameters.session_id,
-                method: "POST",
-                cache: false,
-                contentType: "application/json; charset=UTF-8",
-                data: JSON.stringify(alsCipher)
-            });
+            return alsCipher;
         };
 
         var decrypt = function (encryptedData) {
             var aesDecrypt = AES_decrypt(securityParameters.master_secret, encryptedData.cipher_data);
             var genericBlockCipher = JSON.parse(aesDecrypt);
             var data = genericBlockCipher.data;
-            var mac = MAC(securityParameters.master_secret,data);
-            if( mac === genericBlockCipher.mac){
+            var mac = MAC(securityParameters.master_secret, data);
+            if (mac === genericBlockCipher.mac) {
                 console.log("message from server is correct.");
             }
             return data;
         };
 
+        var getSessionId = function () {
+            return encodeURIComponent(contextParameters.session_id);
+        };
+
         this.handshake = handshake;
         this.encrypt = encrypt;
         this.decrypt = decrypt;
+        this.getSessionId = getSessionId;
     };
 
 

@@ -1,8 +1,8 @@
 package com.als.framework.servletapi;
 
 import com.als.framework.protocol.AlsCipherUtils;
-import com.als.framework.protocol.bean.ALSCiphertext;
-import com.als.framework.protocol.bean.ContextParameters;
+import com.als.framework.protocol.recordprotocol.ALSCiphertext;
+import com.als.framework.protocol.securityparameters.ContextParameters;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -49,6 +49,7 @@ public class ProxyRequestHolder {
         try {
             ALSCiphertext encrypt = AlsCipherUtils.encrypt(contextParameters.getSecurityParameters().getMaster_secret(), new String(alsHttpServletResponseWrapper.pipeline().toByteArray(), "utf-8"));
             ServerHttpResponse serverHttpResponse = new ServletServerHttpResponse((HttpServletResponse) alsHttpServletResponseWrapper.getResponse());
+            alsHttpServletResponseWrapper.setContentLength(-1);//如果不修改这个值,浏览器会按照这个值截取,因为加密了数据,这个值不再正确。
             jsonConverter.write(encrypt, MediaType.APPLICATION_JSON_UTF8, serverHttpResponse);
         } catch (Exception e) {
             e.printStackTrace();

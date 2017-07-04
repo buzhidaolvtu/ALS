@@ -1,19 +1,19 @@
-package com.als.framework.protocol.bean;
+package com.als.framework.protocol.handshakeprotocol.hellomessage;
 
 /**
  * Created by lvtu on 2017/6/27.
  */
-public class ClientHello {
-    String client_version;
+public class ALSServerHello {
+    String server_version = "1.0";
     String random;
     String session_id;
 
-    public String getClient_version() {
-        return client_version;
+    public String getServer_version() {
+        return server_version;
     }
 
-    public void setClient_version(String client_version) {
-        this.client_version = client_version;
+    public void setServer_version(String server_version) {
+        this.server_version = server_version;
     }
 
     public String getRandom() {
@@ -34,8 +34,8 @@ public class ClientHello {
 
     @Override
     public String toString() {
-        return "ClientHello{" +
-                "client_version='" + client_version + '\'' +
+        return "ServerHello{" +
+                "server_version='" + server_version + '\'' +
                 ", random='" + random + '\'' +
                 ", session_id='" + session_id + '\'' +
                 '}';

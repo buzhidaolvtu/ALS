@@ -1,7 +1,7 @@
 package com.als.framework.protocol;
 
-import com.als.framework.protocol.bean.ALSCiphertext;
-import com.als.framework.protocol.bean.GenericBlockCipher;
+import com.als.framework.protocol.recordprotocol.ALSCiphertext;
+import com.als.framework.protocol.handshakeprotocol.GenericBlockCipher;
 import com.als.framework.tools.EncryptUtils;
 import com.als.framework.tools.MACUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;

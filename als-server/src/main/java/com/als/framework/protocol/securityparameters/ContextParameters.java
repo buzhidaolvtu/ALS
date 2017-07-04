@@ -1,4 +1,4 @@
-package com.als.framework.protocol.bean;
+package com.als.framework.protocol.securityparameters;
 
 /**
  * Created by lvtu on 2017/6/27.
@@ -10,7 +10,7 @@ public class ContextParameters {
     private String server_version;
     private String session_id;
 
-    private SecurityParameters securityParameters;
+    private ALSSecurityParameters securityParameters;
 
     public String getPublic_key() {
         return public_key;
@@ -52,11 +52,11 @@ public class ContextParameters {
         this.session_id = session_id;
     }
 
-    public SecurityParameters getSecurityParameters() {
+    public ALSSecurityParameters getSecurityParameters() {
         return securityParameters;
     }
 
-    public void setSecurityParameters(SecurityParameters securityParameters) {
+    public void setSecurityParameters(ALSSecurityParameters securityParameters) {
         this.securityParameters = securityParameters;
     }
 

@@ -1,6 +1,14 @@
 package com.als.framework.protocol;
 
-import com.als.framework.protocol.bean.*;
+import com.als.framework.protocol.handshakeprotocol.ClientKeyExchange;
+import com.als.framework.protocol.handshakeprotocol.clientkeyexchange.EncryptedPreMasterSecret;
+import com.als.framework.protocol.handshakeprotocol.finalization.Finished;
+import com.als.framework.protocol.handshakeprotocol.GenericBlockCipher;
+import com.als.framework.protocol.handshakeprotocol.hellomessage.ALSClientHello;
+import com.als.framework.protocol.handshakeprotocol.hellomessage.ALSServerHello;
+import com.als.framework.protocol.recordprotocol.ALSCiphertext;
+import com.als.framework.protocol.securityparameters.ContextParameters;
+import com.als.framework.protocol.securityparameters.ALSSecurityParameters;
 import com.als.framework.servletapi.ALSHttpServletRequestWrapper;
 import com.als.framework.servletapi.ALSHttpServletResponseWrapper;
 import com.als.framework.servletapi.ProxyRequestHolder;
@@ -45,8 +53,7 @@ public class ALSProtocolHandler {
     private final static List<String> handshakeRequests = Lists.newArrayList(
             "ClientHello",
             "clientKeyExchange",
-            "ClientFinished",
-            "encryptedData");
+            "ClientFinished");
 
     public boolean isHandshakePhase(HttpServletRequest request) {
         final String requestURI = request.getRequestURI();
@@ -59,29 +66,29 @@ public class ALSProtocolHandler {
             ServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
             ServerHttpResponse serverHttpResponse = new ServletServerHttpResponse(response);
             if (requestURI.endsWith("ClientHello")) {
-                SecurityParameters sp = new SecurityParameters();
+                ALSSecurityParameters sp = new ALSSecurityParameters();
                 ContextParameters cp = new ContextParameters();
                 cp.setSecurityParameters(sp);
 
-                ClientHello clientHello = (ClientHello) jsonConverter.read(ClientHello.class, serverHttpRequest);
-                logger.debug("ClientHello message:{}", clientHello);
+                ALSClientHello ALSClientHello = (ALSClientHello) jsonConverter.read(ALSClientHello.class, serverHttpRequest);
+                logger.debug("ClientHello message:{}", ALSClientHello);
 
-                ServerHello serverHello = new ServerHello();
+                ALSServerHello ALSServerHello = new ALSServerHello();
                 String server_random = RandomUtils.secureRandomString(48);
-                serverHello.setRandom(server_random);
+                ALSServerHello.setRandom(server_random);
                 String sessionId = RandomUtils.secureRandomString(16);
-                serverHello.setSession_id(sessionId);
-                logger.debug("ServerHello message:{}", serverHello);
+                ALSServerHello.setSession_id(sessionId);
+                logger.debug("ServerHello message:{}", ALSServerHello);
 
-                sp.setClient_random(clientHello.getRandom());
+                sp.setClient_random(ALSClientHello.getRandom());
                 sp.setServer_random(server_random);
-                cp.setServer_version(serverHello.getServer_version());
-                cp.setClient_version(clientHello.getClient_version());
+                cp.setServer_version(ALSServerHello.getServer_version());
+                cp.setClient_version(ALSClientHello.getClient_version());
                 cp.setSession_id(sessionId);
                 cp.setPublic_key(public_key);
                 cp.setPrivate_key(private_key);
                 cache.put(sessionId, cp);
-                jsonConverter.write(serverHello, MediaType.APPLICATION_JSON_UTF8, serverHttpResponse);
+                jsonConverter.write(ALSServerHello, MediaType.APPLICATION_JSON_UTF8, serverHttpResponse);
             } else if (requestURI.endsWith("clientKeyExchange")) {
                 String sessionId = request.getParameter("sessionId");
                 ContextParameters contextParameters = cache.getIfPresent(sessionId);
@@ -103,7 +110,7 @@ public class ALSProtocolHandler {
                     logger.warn("Context not exist.");
                     return;
                 }
-                SecurityParameters sp = contextParameters.getSecurityParameters();
+                ALSSecurityParameters sp = contextParameters.getSecurityParameters();
                 Finished clientFinished = (Finished) jsonConverter.read(Finished.class, serverHttpRequest);
                 logger.debug("clientFinished message:{}", clientFinished);
                 String verify_data = clientFinished.getVerify_data();

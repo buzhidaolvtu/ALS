@@ -17,6 +17,7 @@ public class ALSHttpServletResponseWrapper extends HttpServletResponseWrapper {
         alsOutputStream = new ALSOutputStream();
     }
 
+    @Override
     public ALSOutputStream getOutputStream() throws IOException {
         return alsOutputStream;
     }

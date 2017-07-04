@@ -1,4 +1,6 @@
-package com.als.framework.protocol.bean;
+package com.als.framework.protocol.handshakeprotocol;
+
+import com.als.framework.protocol.handshakeprotocol.clientkeyexchange.EncryptedPreMasterSecret;
 
 /**
  * Created by lvtu on 2017/6/27.

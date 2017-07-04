@@ -20,7 +20,7 @@ public class ALSFilter implements Filter {
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (!protocolHandler.isHandshakePhase((HttpServletRequest) request)) {
+        if (protocolHandler.isHandshakePhase((HttpServletRequest) request)) {
             protocolHandler.processHandshake((HttpServletRequest) request, (HttpServletResponse) response);
             return;
         }

@@ -1,11 +1,11 @@
-package com.als.framework.protocol.bean;
+package com.als.framework.protocol.recordprotocol;
 
 /**
  * Created by lvtu on 2017/6/28.
  */
 public class ALSCiphertext {
 
-    private String version;
+    private String version = "1.0";
     private String cipher_data;
 
     public String getVersion() {
