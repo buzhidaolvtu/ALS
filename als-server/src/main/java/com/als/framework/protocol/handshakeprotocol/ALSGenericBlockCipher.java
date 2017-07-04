@@ -3,7 +3,7 @@ package com.als.framework.protocol.handshakeprotocol;
 /**
  * Created by lvtu on 2017/6/28.
  */
-public class GenericBlockCipher {
+public class ALSGenericBlockCipher {
     private String data;
     private String mac;
 

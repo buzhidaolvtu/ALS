@@ -1,7 +1,7 @@
 package com.als.framework.protocol;
 
 import com.als.framework.protocol.recordprotocol.ALSCiphertext;
-import com.als.framework.protocol.handshakeprotocol.GenericBlockCipher;
+import com.als.framework.protocol.handshakeprotocol.ALSGenericBlockCipher;
 import com.als.framework.tools.EncryptUtils;
 import com.als.framework.tools.MACUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,7 @@ public class AlsCipherUtils {
 
     public static ALSCiphertext encrypt(String secret, String plainText) {
         try {
-            GenericBlockCipher gbc = new GenericBlockCipher();
+            ALSGenericBlockCipher gbc = new ALSGenericBlockCipher();
             gbc.setData(plainText);
             gbc.setMac(MACUtils.hmac(secret, plainText));
 
@@ -32,11 +32,11 @@ public class AlsCipherUtils {
         return null;
     }
 
-    public static GenericBlockCipher decrypt(String secret, ALSCiphertext alsCiphertext) {
+    public static ALSGenericBlockCipher decrypt(String secret, ALSCiphertext alsCiphertext) {
         try {
             String cipher_data = alsCiphertext.getCipher_data();
             byte[] bytes = EncryptUtils.depadding16(EncryptUtils.AESDecrypt(secret, Base64.decodeBase64(cipher_data)));
-            GenericBlockCipher genericBlockCipher = om.readValue(bytes, GenericBlockCipher.class);
+            ALSGenericBlockCipher genericBlockCipher = om.readValue(bytes, ALSGenericBlockCipher.class);
             return genericBlockCipher;
         } catch (Exception e) {
             e.printStackTrace();

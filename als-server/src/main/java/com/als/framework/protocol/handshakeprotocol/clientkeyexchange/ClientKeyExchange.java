@@ -1,9 +1,11 @@
 package com.als.framework.protocol.handshakeprotocol.clientkeyexchange;
 
+import com.als.framework.protocol.handshakeprotocol.AbstractHandshakeTypeMessage;
+
 /**
  * Created by lvtu on 2017/7/4.
  */
-public class ClientKeyExchange {
+public class ClientKeyExchange extends AbstractHandshakeTypeMessage {
 //    select (KeyExchangeAlgorithm) {
 //        case rsa:
 //        EncryptedPreMasterSecret;

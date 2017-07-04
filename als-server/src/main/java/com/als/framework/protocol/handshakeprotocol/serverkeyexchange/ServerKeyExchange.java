@@ -1,9 +1,11 @@
 package com.als.framework.protocol.handshakeprotocol.serverkeyexchange;
 
+import com.als.framework.protocol.handshakeprotocol.AbstractHandshakeTypeMessage;
+
 /**
  * Created by lvtu on 2017/7/4.
  */
-public class ServerKeyExchange {
+public class ServerKeyExchange extends AbstractHandshakeTypeMessage {
 //    select (KeyExchangeAlgorithm) {
 //        case dh_anon:
 //        ServerDHParams params;

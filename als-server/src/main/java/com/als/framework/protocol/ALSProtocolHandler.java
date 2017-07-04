@@ -1,9 +1,9 @@
 package com.als.framework.protocol;
 
-import com.als.framework.protocol.handshakeprotocol.ClientKeyExchange;
+import com.als.framework.protocol.handshakeprotocol.ALSClientKeyExchange;
 import com.als.framework.protocol.handshakeprotocol.clientkeyexchange.EncryptedPreMasterSecret;
-import com.als.framework.protocol.handshakeprotocol.finalization.Finished;
-import com.als.framework.protocol.handshakeprotocol.GenericBlockCipher;
+import com.als.framework.protocol.handshakeprotocol.finalization.ALSFinished;
+import com.als.framework.protocol.handshakeprotocol.ALSGenericBlockCipher;
 import com.als.framework.protocol.handshakeprotocol.hellomessage.ALSClientHello;
 import com.als.framework.protocol.handshakeprotocol.hellomessage.ALSServerHello;
 import com.als.framework.protocol.recordprotocol.ALSCiphertext;
@@ -97,7 +97,7 @@ public class ALSProtocolHandler {
                     return;
                 }
 
-                ClientKeyExchange clientKeyExchange = (ClientKeyExchange) jsonConverter.read(ClientKeyExchange.class, serverHttpRequest);
+                ALSClientKeyExchange clientKeyExchange = (ALSClientKeyExchange) jsonConverter.read(ALSClientKeyExchange.class, serverHttpRequest);
                 logger.debug("ClientKeyExchange message:{}", clientKeyExchange);
                 EncryptedPreMasterSecret exchange_keys = clientKeyExchange.getExchange_keys();
                 byte[] decrypt = EncryptUtils.decrypt(Base64.decodeBase64(exchange_keys.getEncrypted_pre_master_secret()), EncryptUtils.EncryptAlgorithm.RSA, contextParameters.getPrivate_key());
@@ -111,9 +111,9 @@ public class ALSProtocolHandler {
                     return;
                 }
                 ALSSecurityParameters sp = contextParameters.getSecurityParameters();
-                Finished clientFinished = (Finished) jsonConverter.read(Finished.class, serverHttpRequest);
-                logger.debug("clientFinished message:{}", clientFinished);
-                String verify_data = clientFinished.getVerify_data();
+                ALSFinished clientALSFinished = (ALSFinished) jsonConverter.read(ALSFinished.class, serverHttpRequest);
+                logger.debug("clientFinished message:{}", clientALSFinished);
+                String verify_data = clientALSFinished.getVerify_data();
                 if (verify_data.equals(HashUtils.hash(HashUtils.HashAlgorithm.SHA_256,
                         sp.getClient_random(),
                         sp.getServer_random(),
@@ -124,9 +124,9 @@ public class ALSProtocolHandler {
                             sp.getServer_random(),
                             sp.getPre_master_secret(),
                             "master secret"));
-                    Finished serverFinished = new Finished();
-                    serverFinished.setVerify_data(HashUtils.hash(HashUtils.HashAlgorithm.SHA_256, sp.getClient_random(), sp.getServer_random(), sp.getPre_master_secret(), "server finished"));
-                    jsonConverter.write(serverFinished, MediaType.APPLICATION_JSON_UTF8, serverHttpResponse);
+                    ALSFinished serverALSFinished = new ALSFinished();
+                    serverALSFinished.setVerify_data(HashUtils.hash(HashUtils.HashAlgorithm.SHA_256, sp.getClient_random(), sp.getServer_random(), sp.getPre_master_secret(), "server finished"));
+                    jsonConverter.write(serverALSFinished, MediaType.APPLICATION_JSON_UTF8, serverHttpResponse);
                 } else {
                     logger.error("verify error.");
                 }
@@ -147,7 +147,7 @@ public class ALSProtocolHandler {
             }
 
             ALSCiphertext alsCiphertext = (ALSCiphertext) jsonConverter.read(ALSCiphertext.class, serverHttpRequest);
-            GenericBlockCipher genericBlockCipher = AlsCipherUtils.decrypt(contextParameters.getSecurityParameters().getMaster_secret(), alsCiphertext);
+            ALSGenericBlockCipher genericBlockCipher = AlsCipherUtils.decrypt(contextParameters.getSecurityParameters().getMaster_secret(), alsCiphertext);
             logger.debug("GenericBlockCipher data:{}", genericBlockCipher);
             String hmac = MACUtils.hmac(MACUtils.MACAlgorithm.HmacSHA256, contextParameters.getSecurityParameters().getMaster_secret(), genericBlockCipher.getData());
             if (hmac.equals(genericBlockCipher.getMac())) {

@@ -5,7 +5,7 @@ import com.als.framework.protocol.handshakeprotocol.clientkeyexchange.EncryptedP
 /**
  * Created by lvtu on 2017/6/27.
  */
-public class ClientKeyExchange {
+public class ALSClientKeyExchange {
 
     EncryptedPreMasterSecret exchange_keys;
 
